@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@mdi/font": "7.4.47",
+    "axios": "^1.7.5",
     "core-js": "^3.37.1",
     "oh-vue-icons": "^1.0.0-rc3",
     "roboto-fontface": "*",

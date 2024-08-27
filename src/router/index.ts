@@ -5,13 +5,26 @@
  */
 
 // Composables
+import LoginView from '@/pages/LoginView.vue';
+import MainView from '@/pages/MainView.vue';
 import { createRouter, createWebHistory } from 'vue-router/auto'
-import { routes } from 'vue-router/auto-routes'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes,
-})
+  routes: [
+    {
+      path: '/',
+      name: 'main',
+      component: MainView
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView
+    },
+  ]
+});
+
 
 // Workaround for https://github.com/vitejs/vite/issues/11804
 router.onError((err, to) => {
