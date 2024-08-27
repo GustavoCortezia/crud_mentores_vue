@@ -32,13 +32,9 @@ import { useRouter } from 'vue-router';
   const router = useRouter();
 
   async function handleLogin() {
-
-    console.log("Email:", email);
-console.log("Password:", password);
     const responseLogin = await login(email.value, password.value)
 
     if (responseLogin) {
-    console.log("teste3");
     router.push('/')
   }
 }

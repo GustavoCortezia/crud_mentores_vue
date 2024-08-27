@@ -28,10 +28,10 @@ export const login = async (email: string, password: string) => {
       email,
       password
     });
-    console.log("email.value");
+
     if (response.status === 200) {
-      const { data } = response.data
-      sessionStorage.setItem('token', data.token)
+      sessionStorage.setItem('token', response.data.token)
+      console.log(response.data.token);
     }
 
     return true
@@ -70,5 +70,67 @@ export async function doGet(url: string) {
   } catch (error) {
     console.log(error);
     return [];
+  }
+}
+
+export const getMentor = async () => {
+  const config = {
+    headers: { Authorization: `Bearer ${getUserToken()}` }
+  };
+  try {
+    const response = await client.get('/mentors', config);
+
+    return response;
+  } catch (error: any) {
+    return error?.response;
+  }
+};
+
+export async function registerMentor(name: string, email: string, cpf: string) {
+  const config = {
+    headers: { Authorization: `Bearer ${getUserToken()}` }
+  };
+  console.log(name, email, cpf)
+  try {
+    return await client.post('/mentors', {
+      name,
+      email,
+      cpf
+    },config );
+
+  } catch (error: any) {
+    return error?.response;
+  }
+}
+
+
+export async function updateMentor(id:number, name: string, email: string, cpf: string) {
+  const config = {
+    headers: { Authorization: `Bearer ${getUserToken()}` }
+  };
+  console.log("teste: ",id, name, email, cpf)
+  try {
+    return await client.put(`/mentors/${id}`, {
+      name,
+      email,
+      cpf
+    },config );
+
+  } catch (error: any) {
+    return error?.response;
+  }
+}
+
+
+export async function deleteMentor(id:number) {
+  console.log('teste');
+  const config = {
+    headers: { Authorization: `Bearer ${getUserToken()}` }
+  };
+  try {
+    console.log('teste');
+    return await client.delete(`/mentors/${id}`, config);
+  } catch (error: any) {
+    return error?.reponse;
   }
 }
