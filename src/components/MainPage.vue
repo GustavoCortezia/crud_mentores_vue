@@ -2,7 +2,6 @@
 
 import { deleteMentor, getMentor, registerMentor, updateMentor } from '@/services/api';
 import { MentorType } from '@/types/MentorType';
-import { log } from 'console';
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router';
 
@@ -17,6 +16,40 @@ const router = useRouter();
 const mentorSelecionado = ref<{ id: number; name: string; email: string; cpf: string } | null>(null);
 const search = ref<string>('');
 
+//Paginacao
+
+const currentPage = ref<number>(1); // Página atual
+const itemsPerPage = ref<number>(6); // Quantidade de itens por página
+
+const filteredMentores = computed(() => {
+  const query = search.value.toLowerCase();
+  currentPage.value = 1;
+  return mentores.value.filter(
+    mentor =>
+      mentor.name.toLowerCase().includes(query) ||
+      mentor.cpf.includes(query) ||
+      mentor.email.toLowerCase().includes(query)
+  );
+});
+
+// Lógica de paginação aplicada aos mentores filtrados
+const paginatedMentores = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+  return filteredMentores.value.slice(start, end); // Pagina o resultado filtrado
+});
+
+// Calcula o número total de páginas com base no número de mentores filtrados
+const totalPages = computed(() => Math.ceil(filteredMentores.value.length / itemsPerPage.value));
+
+// Função para mudar de página
+function changePage(page: number) {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page;
+  }
+}
+
+//--------------
 
 async function handleGetMentor() {
   const response = await getMentor();
@@ -85,17 +118,13 @@ async function handleDelete() {
   }
 }
 
-//SearchBar
 
-const filteredMentores = computed(() => {
-  const query = search.value.toLowerCase();
-  return mentores.value.filter(mentor =>
-    mentor.name.toLowerCase().includes(query) ||
-    mentor.cpf.includes(query) ||
-    mentor.email.toLowerCase().includes(query)
-  );
-});
-
+function openModal(){
+  dialog.value = true;
+  nome.value = '';
+  email.value = '';
+  cpf.value = '';
+}
 
 </script>
 
@@ -105,8 +134,10 @@ const filteredMentores = computed(() => {
 
     <v-container class="">
       <h1 class="cadastro-title" >Cadstro de Mentores</h1>
-      <v-text-field class="pesquisar" label="Digite nome, cpf ou email" v-model="search"> </v-text-field>
-
+      <div class="search-div">
+        <v-text-field class="pesquisar" label="Digite nome, cpf ou email" v-model="search"> </v-text-field>
+        <img class="ml-10 mb-5" src="../assets/search-icon-2048x2048-cmujl7en.png" alt="" width="30px" height="30px">
+      </div>
       <div class="container">
         <v-table class="tabela" height="400" fixed-header>
       <thead>
@@ -118,7 +149,7 @@ const filteredMentores = computed(() => {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="mentor in mentores" :key="mentor.id">
+        <tr v-for="mentor in paginatedMentores" :key="mentor.id">
           <td class="table-line text-center">{{ mentor.name }}</td>
           <td class="table-line text-center">{{ mentor.cpf }}</td>
           <td class="table-line text-center">{{ mentor.email }}</td>
@@ -127,6 +158,20 @@ const filteredMentores = computed(() => {
         </tr>
       </tbody>
     </v-table>
+
+<!-- //Paginacao -->
+<div class="pagination">
+          <v-btn
+            v-for="page in totalPages"
+            :key="page"
+            class="page-btn"
+            @click="changePage(page)"
+            :disabled="page === currentPage"
+          >
+            {{ page }}
+          </v-btn>
+        </div>
+
 
     <!-- // Update modal -->
 
@@ -175,7 +220,7 @@ const filteredMentores = computed(() => {
 
     <!-- //Cadastrar Modal -->
 
-    <v-btn @click="dialog = true" class="button-cadastrar"> Cadastrar Mentor </v-btn>
+    <v-btn @click="openModal" class="button-cadastrar"> Cadastrar Mentor </v-btn>
 
     <v-dialog v-model="dialog" width="auto">
       <v-card class="modal bg-white"
@@ -330,5 +375,35 @@ color: rgb(21, 42, 93);
   background-color: white;
   color: green;
   border: 1px solid green;
+}
+
+.search-div{
+  display: flex;
+  align-items: center;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.page-btn {
+  margin: 0 5px;
+  background-color: rgb(241, 123, 4);
+  border: 1px solid rgb(241, 123, 4);
+  color: white;
+  border: none;
+}
+
+.page-btn:hover {
+  background-color: white;
+  border: 1px solid rgb(241, 123, 4);
+  color: rgb(241, 123, 4);
+}
+
+.page-btn[disabled] {
+  background-color: rgb(21, 42, 93);
+  cursor: not-allowed;
 }
 </style>

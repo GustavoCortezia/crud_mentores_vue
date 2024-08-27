@@ -7,28 +7,31 @@ import { resetStorage } from '@/services/authentication';
 
 
 async function handleLogout() {
+
   const response = await logout();
   if (response.status === 200) {
+    console.log("teste");
     resetStorage();
     router.push('/login');
   } else if (response.status === 400) {
     alert('Falha ao deslogar.');
   } else {
-    alert('Ocorreu um erro entre em contato com o suporte.');
+    alert('Erro');
   }
 }
   </script>
 
 <template>
   <v-app>
-    <v-navigation-drawer class="side-bar" :width="250" :elevation="3">
+    <v-navigation-drawer permanent class="side-bar" :width="250" :elevation="3">
       <div class="img-div">
-        <img class="logo-growdev pa-6" src="../assets/logo-growdev.png" alt="" srcset="" height="140px">
+        <img class="logo-growdev pa-6 mt-8" src="../assets/logo-growdev.png" alt="" srcset="" height="140px">
       </div>
 
       <v-divider></v-divider>
-
-      <v-list-item class="link" link title="Mentores"></v-list-item>
+      <div class="link-div">
+        <v-list-item class="link" link title="Mentores"></v-list-item>
+      </div>
       <div class="profile-div">
         <img class="profile-img rounded-circle" src="../assets/image.png" alt="" srcset="" width="60px">
       </div>
@@ -51,7 +54,9 @@ async function handleLogout() {
 <style scoped>
   .side-bar{
     background-color: white;
-
+    display: flex;
+    justify-content: center;
+    align-items: center
   }
 
   .nav-bar{
@@ -68,12 +73,12 @@ async function handleLogout() {
   }
 
   .link{
+    width: 50%;
     display: flex;
     justify-content:center;
     margin-top: 50px;
     color: rgb(21, 42, 93);
     border-bottom: 1px solid rgb(21, 42, 93);
-    border-top: 1px solid rgb(21, 42, 93);
   }
 
   .profile-div{
@@ -94,6 +99,10 @@ async function handleLogout() {
 
   .btn-logout{
     background-color: rgb(241, 123, 4);
+  }
 
+  .link-div{
+    display: flex;
+    justify-content: center;
   }
 </style>

@@ -47,10 +47,16 @@ export async function logout() {
   const config = {
     headers: { Authorization: `Bearer ${getUserToken()}` }
   };
+
+  console.log("Configuração de headers:", config);
+
   try {
-    return await client.delete('/logout', config);
+    const response = await client.delete('/logout', config);
+    console.log("Resposta do servidor:", response);
+    return response;
   } catch (error: any) {
-    return error?.reponse;
+    console.error("Erro ao deslogar:", error?.response || error);
+    return error?.response;
   }
 }
 
