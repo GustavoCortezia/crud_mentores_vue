@@ -8,20 +8,6 @@ const client = axios.create({
   }
 })
 
-// export const login = async (email: string, password: string) => {
-//   try {
-//     const response = await client.post('/auth', {
-//       email,
-//       password
-//     });
-//     sessionStorage.setItem('id', response.data.user.id);
-//     return response;
-//   } catch (error: any) {
-//     return error?.response;
-//   }
-// };
-
-
 export const login = async (email: string, password: string) => {
   try {
     const response = await client.post('/login', {
@@ -60,22 +46,16 @@ export async function logout() {
   }
 }
 
-export async function register(userData: any) {
+export async function register(name: string, email: string, password: string, role: string) {
   try {
-    return await client.post('/users', userData);
+    return await client.post('/users', {
+      name,
+      email,
+      password,
+      role
+    });
   } catch (error: any) {
     return error?.response;
-  }
-}
-
-export async function doGet(url: string) {
-  try {
-    const response = await client.get(url);
-
-    return response?.data;
-  } catch (error) {
-    console.log(error);
-    return [];
   }
 }
 

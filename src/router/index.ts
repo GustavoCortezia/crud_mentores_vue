@@ -7,6 +7,7 @@
 // Composables
 import LoginView from '@/pages/LoginView.vue';
 import MainView from '@/pages/MainView.vue';
+import RegisterView from '@/pages/RegisterView.vue';
 import { createRouter, createWebHistory } from 'vue-router/auto'
 
 const router = createRouter({
@@ -21,6 +22,11 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginView
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: RegisterView
     },
   ]
 });

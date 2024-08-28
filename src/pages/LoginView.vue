@@ -59,8 +59,13 @@ import { useRouter } from 'vue-router';
               block
               @click="handleLogin"
             >
-              Sign In
+              Log In
             </v-btn>
+
+            <div class="div-btn">
+              <v-btn class="mt-10" color="rgb(21, 42, 93)" @click="router.push('/register')" >Cadastrar</v-btn>
+          </div>
+
           </v-form>
         </v-card>
     </div>
@@ -92,5 +97,14 @@ import { useRouter } from 'vue-router';
 
   .error{
     color: red
+  }
+
+  .btn-login{
+    width: 20% !important;
+  }
+
+  .div-btn{
+    display: flex;
+    justify-content: center;
   }
 </style>
