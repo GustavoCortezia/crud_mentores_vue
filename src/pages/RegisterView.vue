@@ -7,26 +7,33 @@ import { ref } from 'vue';
   const email = ref<string>('');
   const password = ref<string>('');
   const error = ref<boolean>(false);
+  const erroradm = ref<boolean>(false);
   const name = ref<string>('');
   const role = ref<string>('');
   const roleinput = ref<string>('');
 
   async function handleRegister() {
+    error.value = false;
+    erroradm.value = false;
     if(!enabled.value){
       role.value = "user";
     } else if(enabled.value){
       if(roleinput.value === "12345"){
         role.value = "admin"
+      }else {
+        erroradm.value = true;
       }
     }
-    const responseLogin = await register(name.value, email.value, password.value, role.value)
+    if(!erroradm.value) {
+      const responseRegister = await register(name.value, email.value, password.value, role.value)
 
-    if (responseLogin) {
-    router.push('/login')
-  }
-  else {
-    error.value = true;
-  }
+      if (responseRegister) {
+      router.push('/login')
+    }
+    else {
+      error.value = true;
+    }
+    }
 }
 </script>
 
@@ -77,7 +84,11 @@ import { ref } from 'vue';
           <br>
 
           <div>
-            <p class="error mb-5 mt-n10" v-if="error">Email ou senha inválidos!</p>
+            <p class="error mb-5" v-if="error">Email ou senha inválidos!</p>
+          </div>
+
+          <div>
+            <p class="error mb-5" v-if="erroradm">Access Key inválida</p>
           </div>
 
           <v-btn

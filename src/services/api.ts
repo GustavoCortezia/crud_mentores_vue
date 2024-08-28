@@ -16,17 +16,35 @@ export const login = async (email: string, password: string) => {
     });
 
     if (response.status === 200) {
-      sessionStorage.setItem('token', response.data.token)
-      console.log(response.data.token);
-    }
+        sessionStorage.setItem('token', response.data.token)
+        console.log(response.data.token);
+      }
 
-    return true
+      return true
   } catch (error) {
     console.log(error)
     return false
   }
 }
 
+export async function register(name: string, email: string, password: string, role: string) {
+  try {
+    const response = await client.post('/users', {
+      name,
+      email,
+      password,
+      role
+    });
+    console.log(response.status);
+
+    if (response.status === 201 || response.status === 200) {
+      return true
+    }
+  } catch (error) {
+    console.log(error)
+    return false
+  }
+}
 
 
 export async function logout() {
@@ -46,18 +64,6 @@ export async function logout() {
   }
 }
 
-export async function register(name: string, email: string, password: string, role: string) {
-  try {
-    return await client.post('/users', {
-      name,
-      email,
-      password,
-      role
-    });
-  } catch (error: any) {
-    return error?.response;
-  }
-}
 
 export const getMentor = async () => {
   const config = {
