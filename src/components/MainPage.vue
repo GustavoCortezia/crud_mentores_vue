@@ -18,31 +18,27 @@ const search = ref<string>('');
 
 //Paginacao
 
-const currentPage = ref<number>(1); // Página atual
-const itemsPerPage = ref<number>(6); // Quantidade de itens por página
+const currentPage = ref<number>(1);
+const itemsPerPage = ref<number>(6);
 
 const filteredMentores = computed(() => {
   const query = search.value.toLowerCase();
+  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
   currentPage.value = 1;
-  return mentores.value.filter(
-    mentor =>
-      mentor.name.toLowerCase().includes(query) ||
-      mentor.cpf.includes(query) ||
-      mentor.email.toLowerCase().includes(query)
-  );
+  return mentores.value.filter(mentor => mentor.name.toLowerCase().includes(query) || mentor.cpf.includes(query) || mentor.email.toLowerCase().includes(query));
 });
 
-// Lógica de paginação aplicada aos mentores filtrados
+// Paginação nos mentores filtrados
 const paginatedMentores = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage.value;
   const end = start + itemsPerPage.value;
-  return filteredMentores.value.slice(start, end); // Pagina o resultado filtrado
+  return filteredMentores.value.slice(start, end);
 });
 
-// Calcula o número total de páginas com base no número de mentores filtrados
+
 const totalPages = computed(() => Math.ceil(filteredMentores.value.length / itemsPerPage.value));
 
-// Função para mudar de página
+// Mudar página
 function changePage(page: number) {
   if (page >= 1 && page <= totalPages.value) {
     currentPage.value = page;
@@ -51,6 +47,8 @@ function changePage(page: number) {
 
 //--------------
 
+
+//Pegar os mentores
 async function handleGetMentor() {
   const response = await getMentor();
   if (response?.data) {
@@ -58,6 +56,7 @@ async function handleGetMentor() {
   }
 }
 
+//Função para registrar os mentores
 async function handleRegisterMentor() {
   mentores.value.forEach(mentor => {
     if(cpf.value === mentor.cpf || email.value === mentor.email){
@@ -74,7 +73,7 @@ onMounted(() => {
   handleGetMentor();
 });
 
-
+//Selecionar o mentor correto para ser editado
 function selecionarMentorParaEdicao(mentor: MentorType) {
   mentorSelecionado.value = {
     id: parseInt(mentor.id as string),
@@ -88,7 +87,7 @@ function selecionarMentorParaEdicao(mentor: MentorType) {
   dialogUpdate.value = true;
 }
 
-
+//Selecionar o mentor correto para ser Deletado
 function selecionarMentorParaDeletar(mentor: MentorType) {
   mentorSelecionado.value = {
   id: parseInt(mentor.id as string),
@@ -103,6 +102,7 @@ function selecionarMentorParaDeletar(mentor: MentorType) {
 }
 
 
+//Funçoes de EDITAR e DELETAR mentores
 async function handleUpdate() {
   if (mentorSelecionado.value) {
     const response = await updateMentor(mentorSelecionado.value.id, nome.value, email.value, cpf.value);
@@ -111,7 +111,6 @@ async function handleUpdate() {
     }
   }
 }
-
 
 async function handleDelete() {
   if (mentorSelecionado.value) {
@@ -123,89 +122,88 @@ async function handleDelete() {
   }
 }
 
-
+//Limpar os valores ao abrir o modal
 function openModal(){
   dialog.value = true;
   nome.value = '';
   email.value = '';
   cpf.value = '';
 }
-
 </script>
 
 
 <template>
+
   <body class="bg-white">
 
-    <v-container class="">
+    <v-container class="container-div">
       <h1 class="cadastro-title mb-15" >Cadastro de Mentores</h1>
       <div class="search-div">
+
+        <!-- Barra de pesquisa -->
         <v-text-field class="pesquisar" label="Digite nome, cpf ou email" v-model="search"> </v-text-field>
         <img class="ml-10 mb-5" src="../assets/search-icon-2048x2048-cmujl7en.png" alt="" width="30px" height="30px">
       </div>
       <div class="container">
+
+        <!-- Tabela -->
         <v-table class="tabela" height="400" fixed-header>
-      <thead>
-        <tr>
-          <th class="table-header text-center">Nome</th>
-          <th class="table-header text-center">CPF</th>
-          <th class="table-header text-center">Email</th>
-          <th class="table-header text-center">Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="mentor in paginatedMentores" :key="mentor.id">
-          <td class="table-line text-center">{{ mentor.name }}</td>
-          <td class="table-line text-center">{{ mentor.cpf }}</td>
-          <td class="table-line text-center">{{ mentor.email }}</td>
-          <td class="action-btns text-center"><v-btn class="btn-edit mr-5 text-none" width="70px" height="30px" @click="selecionarMentorParaEdicao(mentor)">Editar</v-btn>
-            <v-btn class="btn-delete text-none" width="70px" height="30px" @click="selecionarMentorParaDeletar(mentor)">Excluir</v-btn></td>
-        </tr>
-      </tbody>
-    </v-table>
+          <thead>
+            <tr>
+              <th class="table-header text-center">Nome</th>
+              <th class="table-header text-center">CPF</th>
+              <th class="table-header text-center">Email</th>
+              <th class="table-header text-center">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="mentor in paginatedMentores" :key="mentor.id">
+              <td class="table-line text-center">{{ mentor.name }}</td>
+              <td class="table-line text-center">{{ mentor.cpf }}</td>
+              <td class="table-line text-center">{{ mentor.email }}</td>
+              <td class="action-btns text-center"><v-btn class="btn-edit mr-5 text-none" width="70px" height="30px" @click="selecionarMentorParaEdicao(mentor)">Editar</v-btn>
+                <v-btn class="btn-delete text-none" width="70px" height="30px" @click="selecionarMentorParaDeletar(mentor)">Excluir</v-btn></td>
+            </tr>
+          </tbody>
+      </v-table>
 
-<!-- //Paginacao -->
-<div class="pagination">
-          <v-btn
-            v-for="page in totalPages"
-            :key="page"
-            class="page-btn"
-            @click="changePage(page)"
-            :disabled="page === currentPage"
-          >
-            {{ page }}
-          </v-btn>
-        </div>
+      <!-- //Paginação -->
+      <div class="pagination">
+        <v-btn
+          v-for="page in totalPages"
+          :key="page"
+          class="page-btn"
+          @click="changePage(page)"
+          :disabled="page === currentPage"
+        >
+          {{ page }}
+        </v-btn>
+      </div>
 
 
-    <!-- // Update modal -->
-
-    <v-dialog v-model="dialogUpdate" width="auto">
-      <v-card class="modal bg-white"
-        width="1100"
-        height="700"
-      >
+      <!-- // Update modal -->
+      <v-dialog v-model="dialogUpdate" width="auto">
+        <v-card class="modal bg-white"
+          width="1100"
+          height="700"
+        >
 
       <v-card-title class="modal-title pa-15">Atualizar Mentor</v-card-title>
       <v-container class="input-container">
         <v-text-field class="input-mentor" label="Nome" maxlength="50" v-model="nome"> </v-text-field>
-
         <v-text-field class="input-mentor"  label="Email" maxlength="40"  v-model="email"> </v-text-field>
-
         <v-text-field class="input-mentor"  label="CPF" hint="ex: 000.000.000-00" maxlength="11" v-model="cpf"> </v-text-field>
-
       </v-container>
 
+          <template v-slot:actions>
+            <v-btn class="action-btn ms-auto mr-10" text="Salvar" @click="handleUpdate"></v-btn>
+            <v-btn class="action-btn ms-auto" text="Cancelar" @click="dialogUpdate = false"></v-btn>
+          </template>
 
-        <template v-slot:actions>
-          <v-btn class="action-btn ms-auto mr-10" text="Salvar" @click="handleUpdate"></v-btn>
-          <v-btn class="action-btn ms-auto" text="Cancelar" @click="dialogUpdate = false"></v-btn>
-        </template>
-      </v-card>
-    </v-dialog>
+        </v-card>
+      </v-dialog>
 
     <!-- //Delete Modal  -->
-
     <v-dialog v-model="dialogDelete" width="auto">
       <v-card class="modal-delete bg-white"
         width="550"
@@ -224,7 +222,6 @@ function openModal(){
 
 
     <!-- //Cadastrar Modal -->
-
     <v-btn @click="openModal" class="button-cadastrar"> Cadastrar Mentor </v-btn>
     <v-dialog v-model="dialog" width="auto">
       <v-card class="modal bg-white"
@@ -235,11 +232,8 @@ function openModal(){
       <v-card-title class="modal-title pa-15">Cadastrar Mentor</v-card-title>
       <v-container class="input-container">
         <v-text-field class="input-mentor" label="Nome" maxlength="50" v-model="nome" > </v-text-field>
-
         <v-text-field class="input-mentor"  label="Email" maxlength="40" v-model="email"> </v-text-field>
-
         <v-text-field class="input-mentor"  label="CPF" hint="ex: 000.000.000-00" maxlength="11" v-model="cpf"> </v-text-field>
-
       </v-container>
 
         <template v-slot:actions>
@@ -248,14 +242,11 @@ function openModal(){
         </template>
       </v-card>
     </v-dialog>
+  </div>
+</v-container>
 
 
-      </div>
-
-
-
-    </v-container>
-
+<!-- Footer -->
     <footer>
       <div class="footer-div">
         <h4 class="mb-3">Desenvolvido por Gustavo Cortezia</h4>
@@ -268,10 +259,12 @@ function openModal(){
 
 <style>
 .cadastro-title{
+  margin-left: 60px;
   margin-top: 100px;
   margin-bottom: 30px;
   color: rgb(241, 123, 4);
 }
+
 
 .tabela{
   margin-top: 70px;
@@ -324,7 +317,6 @@ h4, h5{
 }
 
 .table-header{
-  /* color: black; */
   background-color: rgb(21, 42, 93) !important;
 }
 
@@ -415,13 +407,16 @@ color: rgb(21, 42, 93);
   display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px; /* Espaçamento entre os botões */
-    flex-wrap: nowrap; /* Não permite quebrar para a linha de baixo */
+    gap: 10px;
+    flex-wrap: nowrap;
 }
+
+
+/* Responsividade media */
 
 @media (max-width: 600px) {
     .action-btns {
-      flex-direction: row; /* Garante que os botões fiquem alinhados horizontalmente mesmo em telas pequenas */
+      flex-direction: row;
     }
   }
 
@@ -457,11 +452,8 @@ color: rgb(21, 42, 93);
     .pesquisar{
       margin-left: 0;
     }
-  }
-
-  @media (max-width: 700px) {
-    .tabela{
-      overflow: scroll;
+    .cadastro-title{
+      margin-left: 0;
     }
   }
 </style>

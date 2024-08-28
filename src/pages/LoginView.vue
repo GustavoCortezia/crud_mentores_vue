@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import { login } from '@/services/api';
-import { resetStorage } from '@/services/authentication';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-
-
 
   const email = ref<string>('');
   const password = ref<string>('');
   const router = useRouter();
 
+//Login
+
   async function handleLogin() {
     const responseLogin = await login(email.value, password.value)
-
     if (responseLogin) {
     router.push('/')
   }
