@@ -51,7 +51,7 @@ async function handleLogout() {
       </div>
     </v-app-bar>
 
-    <MainPage/>
+  <MainPage/>
 
   </v-app>
 </template>

@@ -3,16 +3,21 @@ import { login } from '@/services/api';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+
   const email = ref<string>('');
   const password = ref<string>('');
   const router = useRouter();
+  const error = ref<boolean>(false);
+
 
 //Login
-
   async function handleLogin() {
     const responseLogin = await login(email.value, password.value)
     if (responseLogin) {
     router.push('/')
+  }
+  else {
+    error.value = true;
   }
 }
 
@@ -34,6 +39,7 @@ import { useRouter } from 'vue-router';
             ></v-text-field>
 
             <v-text-field
+            class="mb-4"
               type="password"
               v-model="password"
               label="Password"
@@ -41,6 +47,10 @@ import { useRouter } from 'vue-router';
             ></v-text-field>
 
             <br>
+
+            <div>
+              <p class="error mb-5 mt-n10" v-if="error">Email ou senha inválidos!</p>
+            </div>
 
             <v-btn
               color="rgb(241, 123, 4)"
@@ -78,5 +88,9 @@ import { useRouter } from 'vue-router';
 
   .form{
     width: 90%;
+  }
+
+  .error{
+    color: red
   }
 </style>

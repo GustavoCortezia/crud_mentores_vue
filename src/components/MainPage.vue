@@ -15,9 +15,26 @@ const cpf = ref<string>('');
 const router = useRouter();
 const mentorSelecionado = ref<{ id: number; name: string; email: string; cpf: string } | null>(null);
 const search = ref<string>('');
+const error = ref<boolean>(false);
+
+
+//Error Handle
+function handleErrors(){
+  error.value = false;
+  const cpfNumerico = /^[0-9]+$/.test(cpf.value);
+
+  if(!cpfNumerico){
+    error.value = true;
+  }
+
+  const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value);
+  if (!emailValido) {
+    error.value = true;
+  }
+
+}
 
 //Paginacao
-
 const currentPage = ref<number>(1);
 const itemsPerPage = ref<number>(6);
 
@@ -58,14 +75,17 @@ async function handleGetMentor() {
 
 //Função para registrar os mentores
 async function handleRegisterMentor() {
+  handleErrors();
   mentores.value.forEach(mentor => {
     if(cpf.value === mentor.cpf || email.value === mentor.email){
       alert("ERRO: CPF ou email já em uso!");
     }
   });
-  const response = await registerMentor(nome.value, email.value, cpf.value);
-  if (response?.data) {
-    router.go(0);
+  if(!error.value){
+    const response = await registerMentor(nome.value, email.value, cpf.value);
+    if (response?.data) {
+      router.go(0);
+    }
   }
 }
 
@@ -104,7 +124,9 @@ function selecionarMentorParaDeletar(mentor: MentorType) {
 
 //Funçoes de EDITAR e DELETAR mentores
 async function handleUpdate() {
-  if (mentorSelecionado.value) {
+  handleErrors();
+
+  if (mentorSelecionado.value && !error.value) {
     const response = await updateMentor(mentorSelecionado.value.id, nome.value, email.value, cpf.value);
     if (response?.data) {
       router.go(0);
@@ -195,6 +217,10 @@ function openModal(){
         <v-text-field class="input-mentor"  label="CPF" hint="ex: 000.000.000-00" maxlength="11" v-model="cpf"> </v-text-field>
       </v-container>
 
+      <div>
+        <p class="error mb-5 mt-n10" v-if="error">CPF ou Email inválidos</p>
+      </div>
+
           <template v-slot:actions>
             <v-btn class="action-btn ms-auto mr-10" text="Salvar" @click="handleUpdate"></v-btn>
             <v-btn class="action-btn ms-auto" text="Cancelar" @click="dialogUpdate = false"></v-btn>
@@ -235,6 +261,10 @@ function openModal(){
         <v-text-field class="input-mentor"  label="Email" maxlength="40" v-model="email"> </v-text-field>
         <v-text-field class="input-mentor"  label="CPF" hint="ex: 000.000.000-00" maxlength="11" v-model="cpf"> </v-text-field>
       </v-container>
+
+            <div>
+              <p class="error mb-5 mt-n10" v-if="error">Erro: CPF inválido</p>
+            </div>
 
         <template v-slot:actions>
           <v-btn class="action-btn ms-auto mr-10" text="Salvar" @click="handleRegisterMentor"></v-btn>
@@ -410,6 +440,10 @@ color: rgb(21, 42, 93);
     gap: 10px;
     flex-wrap: nowrap;
 }
+
+.error{
+    color: red
+  }
 
 
 /* Responsividade media */
