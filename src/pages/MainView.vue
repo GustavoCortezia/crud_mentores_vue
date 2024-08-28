@@ -3,8 +3,9 @@ import MainPage from '@/components/MainPage.vue';
 import router from '@/router';
 import { logout } from '@/services/api';
 import { resetStorage } from '@/services/authentication';
+import { ref } from 'vue';
 
-
+const drawer = ref<boolean>(false);
 
 async function handleLogout() {
 
@@ -23,7 +24,7 @@ async function handleLogout() {
 
 <template>
   <v-app>
-    <v-navigation-drawer permanent class="side-bar" :width="250" :elevation="3">
+    <v-navigation-drawer class="side-bar" v-model="drawer" temporary :width="300" :elevation="3">
       <div class="img-div">
         <img class="logo-growdev pa-6 mt-8" src="../assets/logo-growdev.png" alt="" srcset="" height="140px">
       </div>
@@ -32,18 +33,19 @@ async function handleLogout() {
       <div class="link-div">
         <v-list-item class="link" link title="Mentores"></v-list-item>
       </div>
-      <div class="profile-div">
-        <img class="profile-img rounded-circle" src="../assets/image.png" alt="" srcset="" width="60px">
+      <div class="profile-div mt-n15">
+        <img class="profile-img rounded-circle mt-n15" src="../assets/image.png" alt="" srcset="" width="60px">
       </div>
       <div class="logout-div">
         <v-btn class="btn-logout" @click="handleLogout">Logout</v-btn>
       </div>
     </v-navigation-drawer>
 
-    <v-app-bar :elevation="1" class="nav-bar">
-
-
-</v-app-bar>
+    <v-app-bar  :elevation="1" class="nav-bar">
+      <div class="d-flex justify-center align-center h-100">
+        <v-btn color="white ml-5" @click.stop="drawer = !drawer" icon="mdi-menu"></v-btn>
+      </div>
+    </v-app-bar>
 
 <MainPage/>
 
@@ -52,11 +54,21 @@ async function handleLogout() {
 
 
 <style scoped>
-  .side-bar{
+.side-bar {
     background-color: white;
     display: flex;
-    justify-content: center;
-    align-items: center
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  @media (max-width: 776px) {
+    .side-bar {
+      width: 200px;
+    }
   }
 
   .nav-bar{
@@ -99,10 +111,19 @@ async function handleLogout() {
 
   .btn-logout{
     background-color: rgb(241, 123, 4);
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid rgb(241, 123, 4);
   }
 
   .link-div{
     display: flex;
     justify-content: center;
+  }
+
+  .btn-logout:hover{
+    background-color: white;
+    color: rgb(241, 123, 4);
+    border: 1px solid rgb(241, 123, 4);
   }
 </style>

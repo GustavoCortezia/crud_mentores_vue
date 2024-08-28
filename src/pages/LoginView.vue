@@ -4,27 +4,6 @@ import { resetStorage } from '@/services/authentication';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-  // export default {
-  //   data: () => ({
-  //     form: false,
-  //     email: null,
-  //     password: null,
-  //     loading: false,
-  //   }),
-
-  //   methods: {
-  //     onSubmit () {
-  //       if (!this.form) return
-
-  //       this.loading = true
-
-  //       setTimeout(() => (this.loading = false), 2000)
-  //     },
-  //     required (v) {
-  //       return !!v || 'Campo obrigatório'
-  //     },
-  //   },
-  // }
 
 
   const email = ref<string>('');
@@ -39,23 +18,6 @@ import { useRouter } from 'vue-router';
   }
 }
 
-//   const handleLogin = async () => {
-//     console.log('teste');
-
-//     resetStorage();
-//     error.value = '';
-
-//     const response = await login(email.value, password.value);
-//     console.log('teste');
-
-//     console.log('teste');
-//   if (response.status === 200) {
-//     localStorage.setItem('token', response.data.data.token);
-//     localStorage.setItem('userData', JSON.stringify(response.data.data.user));
-//     router.push('/');
-//   }
-//   error.value = response.data.msg;
-// };
 </script>
 
 <template>
@@ -77,7 +39,6 @@ import { useRouter } from 'vue-router';
               type="password"
               v-model="password"
               label="Password"
-              placeholder="Enter your password"
               clearable
             ></v-text-field>
 

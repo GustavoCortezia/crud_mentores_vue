@@ -59,6 +59,11 @@ async function handleGetMentor() {
 }
 
 async function handleRegisterMentor() {
+  mentores.value.forEach(mentor => {
+    if(cpf.value === mentor.cpf || email.value === mentor.email){
+      alert("ERRO: CPF ou email já em uso!");
+    }
+  });
   const response = await registerMentor(nome.value, email.value, cpf.value);
   if (response?.data) {
     router.go(0);
@@ -133,7 +138,7 @@ function openModal(){
   <body class="bg-white">
 
     <v-container class="">
-      <h1 class="cadastro-title" >Cadstro de Mentores</h1>
+      <h1 class="cadastro-title mb-15" >Cadastro de Mentores</h1>
       <div class="search-div">
         <v-text-field class="pesquisar" label="Digite nome, cpf ou email" v-model="search"> </v-text-field>
         <img class="ml-10 mb-5" src="../assets/search-icon-2048x2048-cmujl7en.png" alt="" width="30px" height="30px">
@@ -153,7 +158,7 @@ function openModal(){
           <td class="table-line text-center">{{ mentor.name }}</td>
           <td class="table-line text-center">{{ mentor.cpf }}</td>
           <td class="table-line text-center">{{ mentor.email }}</td>
-          <td class="text-center"><v-btn class="btn-edit mr-5 text-none" width="70px" height="30px" @click="selecionarMentorParaEdicao(mentor)">Editar</v-btn>
+          <td class="action-btns text-center"><v-btn class="btn-edit mr-5 text-none" width="70px" height="30px" @click="selecionarMentorParaEdicao(mentor)">Editar</v-btn>
             <v-btn class="btn-delete text-none" width="70px" height="30px" @click="selecionarMentorParaDeletar(mentor)">Excluir</v-btn></td>
         </tr>
       </tbody>
@@ -183,11 +188,11 @@ function openModal(){
 
       <v-card-title class="modal-title pa-15">Atualizar Mentor</v-card-title>
       <v-container class="input-container">
-        <v-text-field class="input-mentor" label="Nome" v-model="nome"> </v-text-field>
+        <v-text-field class="input-mentor" label="Nome" maxlength="50" v-model="nome"> </v-text-field>
 
-        <v-text-field class="input-mentor"  label="Email" v-model="email"> </v-text-field>
+        <v-text-field class="input-mentor"  label="Email" maxlength="40"  v-model="email"> </v-text-field>
 
-        <v-text-field class="input-mentor"  label="CPF" v-model="cpf"> </v-text-field>
+        <v-text-field class="input-mentor"  label="CPF" hint="ex: 000.000.000-00" maxlength="11" v-model="cpf"> </v-text-field>
 
       </v-container>
 
@@ -207,7 +212,7 @@ function openModal(){
         height="250"
       >
 
-      <v-card-title class="pa-5">Tem certeza que deseja deletar este mentor?</v-card-title>
+      <v-card-title class="delete-title pa-5">Tem certeza que deseja deletar este mentor?</v-card-title>
 
         <template v-slot:actions>
           <v-btn class="action-btn ms-auto mr-10" text="Deletar" @click="handleDelete"></v-btn>
@@ -221,7 +226,6 @@ function openModal(){
     <!-- //Cadastrar Modal -->
 
     <v-btn @click="openModal" class="button-cadastrar"> Cadastrar Mentor </v-btn>
-
     <v-dialog v-model="dialog" width="auto">
       <v-card class="modal bg-white"
         width="1100"
@@ -230,11 +234,11 @@ function openModal(){
 
       <v-card-title class="modal-title pa-15">Cadastrar Mentor</v-card-title>
       <v-container class="input-container">
-        <v-text-field class="input-mentor" label="Nome" v-model="nome" > </v-text-field>
+        <v-text-field class="input-mentor" label="Nome" maxlength="50" v-model="nome" > </v-text-field>
 
-        <v-text-field class="input-mentor"  label="Email" v-model="email"> </v-text-field>
+        <v-text-field class="input-mentor"  label="Email" maxlength="40" v-model="email"> </v-text-field>
 
-        <v-text-field class="input-mentor"  label="CPF" v-model="cpf"> </v-text-field>
+        <v-text-field class="input-mentor"  label="CPF" hint="ex: 000.000.000-00" maxlength="11" v-model="cpf"> </v-text-field>
 
       </v-container>
 
@@ -254,8 +258,8 @@ function openModal(){
 
     <footer>
       <div class="footer-div">
-        <h4>Desenvolvido por Gustavo Cortezia</h4>
-        <h6>08/2024</h6>
+        <h4 class="mb-3">Desenvolvido por Gustavo Cortezia</h4>
+        <h5>08/2024</h5>
       </div>
     </footer>
   </body>
@@ -270,7 +274,7 @@ function openModal(){
 }
 
 .tabela{
-  margin-top: 80px;
+  margin-top: 70px;
   width: 90%;
   background-color: white !important;
   border: 2px solid rgb(21, 42, 93);
@@ -284,6 +288,7 @@ function openModal(){
 
 .pesquisar{
  color:rgb(21, 42, 93) ;
+ margin-left: 5rem;
 }
 
 .button-cadastrar{
@@ -308,7 +313,7 @@ footer {
   background-color: rgb(21, 42, 93);
 }
 
-h4, h6{
+h4, h5{
   color: white;
 }
 .footer-div{
@@ -316,7 +321,6 @@ h4, h6{
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  margin-left: 200px;
 }
 
 .table-header{
@@ -406,4 +410,58 @@ color: rgb(21, 42, 93);
   background-color: rgb(21, 42, 93);
   cursor: not-allowed;
 }
+
+.action-btns {
+  display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* Espaçamento entre os botões */
+    flex-wrap: nowrap; /* Não permite quebrar para a linha de baixo */
+}
+
+@media (max-width: 600px) {
+    .action-btns {
+      flex-direction: row; /* Garante que os botões fiquem alinhados horizontalmente mesmo em telas pequenas */
+    }
+  }
+
+  @media (max-width: 1140px) {
+    .modal{
+      width: 90vw !important;
+      height: 100vh !important;
+    }
+
+    .modal-delete{
+      width: 90vw !important;
+      height: 40vh !important;
+    }
+  }
+
+  @media (max-width: 550px) {
+    .modal-delete .delete-title {
+      font-size: 1rem;
+      word-wrap: break-word;
+      padding: 0;
+      text-align: center;
+      word-wrap: break-word;
+      white-space: normal;
+    }
+  }
+
+
+@media (max-width: 776px) {
+    .tabela {
+      width: 100%;
+      height: 400px;
+    }
+    .pesquisar{
+      margin-left: 0;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .tabela{
+      overflow: scroll;
+    }
+  }
 </style>
