@@ -2,6 +2,7 @@
 import router from '@/router';
 import { register } from '@/services/api';
 import { ref } from 'vue';
+import CryptoJS from 'crypto-js';
 
   const enabled = ref<boolean>(false);
   const email = ref<string>('');
@@ -18,7 +19,7 @@ import { ref } from 'vue';
     if(!enabled.value){
       role.value = "user";
     } else if(enabled.value){
-      if(roleinput.value === "12345"){
+      if(CryptoJS.SHA256(roleinput.value).toString() === "8af34d2f36503218d7dce0a57414f5c47f3327efa70273f28ed9c91d0af56070"){
         role.value = "admin"
       }else {
         erroradm.value = true;
@@ -72,6 +73,7 @@ import { ref } from 'vue';
             :disabled="!enabled"
             v-model="roleinput"
             label="Access Key"
+            type="password"
             hide-details
             ></v-text-field>
             <v-checkbox-btn

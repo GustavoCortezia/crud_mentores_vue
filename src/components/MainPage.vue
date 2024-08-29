@@ -16,6 +16,7 @@ const router = useRouter();
 const mentorSelecionado = ref<{ id: number; name: string; email: string; cpf: string } | null>(null);
 const search = ref<string>('');
 const error = ref<boolean>(false);
+const sortOrder = ref<string>('asc');
 
 
 //Error Handle
@@ -151,6 +152,23 @@ function openModal(){
   email.value = '';
   cpf.value = '';
 }
+
+
+//Listar nomes em ordem alfabética
+//localeCompare: compara duas strings
+function sortByName() {
+  if (sortOrder.value === 'asc') {
+    mentores.value.sort((a, b) => a.name.localeCompare(b.name));
+    sortOrder.value = 'desc';
+  } else {
+    mentores.value.sort((a, b) => b.name.localeCompare(a.name));
+    sortOrder.value = 'asc';
+  }
+}
+
+
+
+
 </script>
 
 
@@ -172,7 +190,7 @@ function openModal(){
         <v-table class="tabela" height="400" fixed-header>
           <thead>
             <tr>
-              <th class="table-header text-center">Nome</th>
+              <th class="table-header text-center"><button class="button-sort" @click="sortByName">Nome</button></th>
               <th class="table-header text-center">CPF</th>
               <th class="table-header text-center">Email</th>
               <th class="table-header text-center">Ações</th>
@@ -445,6 +463,10 @@ color: rgb(21, 42, 93);
     color: red
   }
 
+  .button-sort {
+    background-color: rgb(21, 42, 93);
+    margin-left: 7px;
+  }
 
 /* Responsividade media */
 
