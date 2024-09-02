@@ -297,7 +297,8 @@ function sortByName() {
 <!-- Footer -->
     <footer>
       <div class="footer-div">
-        <h4 class="mb-3">Desenvolvido por Gustavo Cortezia</h4>
+        <h3>Desenvolvido por Gustavo Cortezia</h3>
+        <h5 class="mb-1 mt-2">https://www.linkedin.com/in/gustavocortezia/</h5>
         <h5>08/2024</h5>
       </div>
     </footer>
@@ -354,7 +355,7 @@ footer {
   background-color: rgb(21, 42, 93);
 }
 
-h4, h5{
+h3, h5{
   color: white;
 }
 .footer-div{
