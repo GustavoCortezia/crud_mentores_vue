@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import MainPage from '@/components/MainPage.vue';
-import router from '@/router';
 import { logout } from '@/services/api';
-import { resetStorage } from '@/services/authentication';
-import { ref } from 'vue';
+import { getUserToken, resetStorage } from '@/services/authentication';
+import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const drawer = ref<boolean>(false);
-
+const router = useRouter();
 
 //Logout
 async function handleLogout() {
@@ -19,6 +19,17 @@ async function handleLogout() {
     alert("Erro ao deslogar")
   }
 }
+
+function forceLogin(){
+  if(!getUserToken()){
+    router.push('/login')
+  }
+}
+
+onMounted(() => {
+  forceLogin();
+});
+
   </script>
 
 <template>
